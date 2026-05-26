@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Piña Loca | Frutas y distribución</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/styles.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <a class="brand" href="#store" data-route="store" aria-label="Piña Loca">
+        <img src="/assets/logo.svg" alt="Logo Piña Loca" />
+        <span>Piña Loca</span>
+      </a>
+      <button class="menu-button" id="menuButton" aria-label="Abrir menú">☰</button>
+      <div class="nav-links" id="navLinks">
+        <a href="#store" data-route="store">Tienda</a>
+        <a href="#cart" data-route="cart" data-auth="true" data-client-only="true">Carrito</a>
+        <a href="#history" data-route="history" data-auth="true" data-client-only="true">Compras</a>
+        <a href="#driver" data-route="driver" data-driver="true">Chofer</a>
+        <a href="#admin" data-route="admin" data-admin="true">Admin</a>
+        <button class="theme-toggle" id="themeToggle" type="button" aria-label="Cambiar modo">◐</button>
+        <button class="btn small" id="authButton" type="button">Ingresar</button>
+      </div>
+    </nav>
+
+    <main>
+      <section class="hero" id="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Frutas tropicales, tienda y logística</p>
+          <h1>Piña Loca</h1>
+          <p>Compra fruta fresca con promociones automáticas o administra choferes, camiones, viajes y reportes desde un solo sistema.</p>
+          <div class="hero-actions">
+            <a class="btn" href="#store" data-route="store">Ver productos</a>
+            <a class="btn ghost" href="#cart" data-route="cart">Mi carrito</a>
+          </div>
+        </div>
+        <img class="hero-art" src="/assets/hero-fruits.svg" alt="Frutas tropicales Piña Loca" />
+      </section>
+
+      <section class="toolbar" id="storeToolbar">
+        <div>
+          <h2>Tienda</h2>
+          <p>Busca productos y filtra promociones activas.</p>
+        </div>
+        <div class="filters">
+          <input id="searchInput" type="search" placeholder="Buscar fruta..." />
+          <select id="categoryFilter" aria-label="Filtrar categoría">
+            <option value="">Todas las categorías</option>
+          </select>
+          <select id="promotionFilter" aria-label="Filtrar promoción">
+            <option value="">Todos</option>
+            <option value="with">Con promoción</option>
+            <option value="without">Sin promoción</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="grid" id="productGrid" aria-live="polite"></section>
+
+      <section class="panel hidden" id="cartView">
+        <div class="panel-head">
+          <div>
+            <h2>Carrito de compras</h2>
+            <p>Los descuentos y 2x1 se aplican automáticamente.</p>
+          </div>
+          <div class="totals">
+            <span id="cartSubtotal">Subtotal: Q0.00</span>
+            <span id="cartDiscount">Descuento: Q0.00</span>
+            <strong id="cartTotal">Total: Q0.00</strong>
+          </div>
+        </div>
+        <div id="cartItems" class="stack"></div>
+        <button class="btn" id="checkoutButton" type="button">Finalizar compra</button>
+      </section>
+
+      <section class="panel hidden" id="historyView">
+        <div class="panel-head">
+          <div>
+            <h2>Historial de compras</h2>
+            <p>Descarga tus facturas en PDF cuando las necesites.</p>
+          </div>
+        </div>
+        <div id="invoiceHistory" class="stack"></div>
+      </section>
+
+      <section class="admin-layout hidden" id="driverView">
+        <aside class="admin-side">
+          <h2>Panel chofer</h2>
+          <button class="tab active" data-driver-tab="driverTrips" type="button">Viajes asignados</button>
+          <button class="tab" data-driver-tab="driverReports" type="button">Reportes</button>
+          <button class="tab" data-driver-tab="driverReportHistory" type="button">Estado reportes</button>
+        </aside>
+        <div class="admin-content">
+          <section id="driverTrips"></section>
+          <section class="hidden" id="driverReports">
+            <form class="product-form" id="driverReportForm">
+              <select id="reportTrip" required></select>
+              <select id="reportType" required>
+                <option value="Falla mecánica">Falla mecánica</option>
+                <option value="Producto dañado">Producto dañado</option>
+                <option value="Accidente">Accidente</option>
+                <option value="Contratiempo">Contratiempo</option>
+                <option value="Retraso">Retraso</option>
+              </select>
+              <select id="reportTruckCondition" required>
+                <option value="Óptimas condiciones">Óptimas condiciones</option>
+                <option value="En reparación">En reparación</option>
+                <option value="En mantenimiento">En mantenimiento</option>
+              </select>
+              <p class="muted form-note">Falla mecánica cambia el camión a reparación; los demás reportes lo dejan en óptimas condiciones.</p>
+              <textarea id="reportMessage" required placeholder="Detalle del reporte"></textarea>
+              <button class="btn" type="submit">Enviar reporte</button>
+            </form>
+          </section>
+          <section class="hidden" id="driverReportHistory"></section>
+        </div>
+      </section>
+
+      <section class="admin-layout hidden" id="adminView">
+        <aside class="admin-side">
+          <h2>Administración</h2>
+          <button class="tab active" data-admin-tab="dashboard" type="button">Resumen</button>
+          <button class="tab" data-admin-tab="workers" type="button">Trabajadores</button>
+          <button class="tab" data-admin-tab="trucks" type="button">Camiones</button>
+          <button class="tab" data-admin-tab="trips" type="button">Viajes</button>
+          <button class="tab" data-admin-tab="reports" type="button">Reportes</button>
+          <button class="tab" data-admin-tab="products" type="button">Productos</button>
+          <button class="tab" data-admin-tab="invoices" type="button">Facturas</button>
+        </aside>
+        <div class="admin-content">
+          <section id="adminDashboard"></section>
+
+          <section class="hidden" id="adminWorkers">
+            <div class="toolbar inline-toolbar">
+              <div><h2>Trabajadores / Choferes</h2><p>Usuarios de rol chofer con datos laborales.</p></div>
+              <input id="workerSearch" type="search" placeholder="Buscar trabajador..." />
+            </div>
+            <form class="product-form" id="workerForm">
+              <input type="hidden" id="workerId" />
+              <input id="workerName" required placeholder="Nombre" />
+              <input id="workerEmail" required type="email" placeholder="Correo de acceso" />
+              <input id="workerPassword" type="password" minlength="8" placeholder="Contraseña nueva o inicial" />
+              <input id="workerPhone" required placeholder="Teléfono" />
+              <input id="workerAddress" required placeholder="Dirección" />
+              <input id="workerBank" required placeholder="Cuenta bancaria" />
+              <input id="workerProfession" required placeholder="Profesión" value="Chofer" />
+              <select id="workerStatus">
+                <option>Disponible</option>
+                <option>En viaje</option>
+                <option>Descanso</option>
+                <option>Inactivo</option>
+              </select>
+              <button class="btn" type="submit">Guardar trabajador</button>
+              <button class="btn ghost" id="clearWorker" type="button">Limpiar</button>
+            </form>
+            <div id="adminWorkerList" class="stack"></div>
+          </section>
+
+          <section class="hidden" id="adminTrucks">
+            <h2>Camiones disponibles</h2>
+            <div id="truckSummary" class="metric-grid"></div>
+            <form class="product-form" id="truckForm">
+              <input type="hidden" id="truckId" />
+              <input id="truckName" required placeholder="Nombre del camión" />
+              <input id="truckPlate" required placeholder="Placa" />
+              <select id="truckDriver"></select>
+              <select id="truckCondition">
+                <option>Óptimas condiciones</option>
+                <option>En reparación</option>
+                <option>En mantenimiento</option>
+              </select>
+              <select id="truckAvailability">
+                <option>Disponible</option>
+                <option>En viaje</option>
+              </select>
+              <button class="btn" type="submit">Guardar camión</button>
+              <button class="btn ghost" id="clearTruck" type="button">Limpiar</button>
+            </form>
+            <div id="adminTruckList" class="stack"></div>
+          </section>
+
+          <section class="hidden" id="adminTrips">
+            <h2>Camiones en viaje</h2>
+            <form class="product-form" id="tripForm">
+              <input type="hidden" id="tripId" />
+              <select id="tripDriver" required></select>
+              <select id="tripTruck" required></select>
+              <select id="tripDestination" required>
+                <option value="Potra" data-place="Jocotillo Escuintla">Jocotillo Escuintla = Potra</option>
+                <option value="Frutexpo" data-place="Zacapa">Zacapa = Frutexpo</option>
+                <option value="Costeña" data-place="Honduras">Honduras = Costeña</option>
+              </select>
+              <select id="tripFruit" required>
+                <option>Piña</option>
+                <option>Sandía</option>
+              </select>
+              <input id="tripQuantity" required min="1" type="number" placeholder="Cantidad transportada" />
+              <input id="tripDeparture" required type="date" />
+              <input id="tripReturn" required type="date" />
+              <button class="btn" type="submit">Guardar viaje</button>
+              <button class="btn ghost" id="clearTrip" type="button">Limpiar</button>
+            </form>
+            <div id="adminTripList" class="stack"></div>
+          </section>
+
+          <section class="hidden" id="adminReports"></section>
+
+          <section class="hidden" id="adminProducts">
+            <h2>Productos</h2>
+            <form class="product-form" id="productForm">
+              <input type="hidden" id="productId" />
+              <input id="productName" required placeholder="Nombre" />
+              <input id="productCategory" required placeholder="Categoría" />
+              <input id="productPrice" required min="0" step="0.01" type="number" placeholder="Precio" />
+              <input id="productStock" required min="0" type="number" placeholder="Stock" />
+              <input id="productImage" required placeholder="URL de imagen o recurso subido" />
+              <input id="productImageFile" type="file" accept="image/*" />
+              <select id="productPromotion">
+                <option value="none">Sin promoción</option>
+                <option value="2x1">2x1</option>
+                <option value="discount5">Descuento 5%</option>
+                <option value="discount10">Descuento 10%</option>
+                <option value="day">Promoción por día</option>
+              </select>
+              <select id="productPromoDay">
+                <option value="">Día específico</option>
+                <option value="0">Domingo</option>
+                <option value="1">Lunes</option>
+                <option value="2">Martes</option>
+                <option value="3">Miércoles</option>
+                <option value="4">Jueves</option>
+                <option value="5">Viernes</option>
+                <option value="6">Sábado</option>
+              </select>
+              <input id="productPromoLabel" placeholder="Texto de promoción, ej. 2x1 los jueves" />
+              <textarea id="productDescription" required placeholder="Descripción"></textarea>
+              <label class="check">
+                <input id="productFeatured" type="checkbox" />
+                Destacado
+              </label>
+              <button class="btn" type="submit">Guardar producto</button>
+              <button class="btn ghost" id="cancelEdit" type="button">Limpiar</button>
+            </form>
+            <div id="adminProductList" class="stack"></div>
+          </section>
+
+          <section class="hidden" id="adminInvoices"></section>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <strong>Piña Loca</strong>
+      <span>Tienda, distribución, camiones y facturación digital.</span>
+    </footer>
+
+    <dialog id="authDialog">
+      <form class="auth-box" id="authForm">
+        <button class="close" id="closeAuth" type="button">×</button>
+        <h2 id="authTitle">Ingresar</h2>
+        <div class="auth-alert hidden" id="authAlert"></div>
+        <input id="authName" placeholder="Nombre completo" />
+        <input id="authEmail" required type="email" placeholder="Correo" />
+        <input id="authPassword" required minlength="8" type="password" placeholder="Contraseña" />
+        <button class="btn" type="submit">Continuar</button>
+        <button class="link-button" id="switchAuth" type="button">Crear una cuenta</button>
+      </form>
+    </dialog>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <script src="/js/app.js"></script>
+  </body>
+</html>
